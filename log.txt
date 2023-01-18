@@ -1,0 +1,164 @@
+Started by user ubuntu
+Obtained Jenkinsfile from git https://github.com/nguyenphungsang/Jenkins_CI.git
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/Jenkins_CI
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+using credential github-private-key
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/Jenkins_CI/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/nguyenphungsang/Jenkins_CI.git # timeout=10
+Fetching upstream changes from https://github.com/nguyenphungsang/Jenkins_CI.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.34.1'
+using GIT_SSH to set credentials 
+Verifying host key using known hosts file
+You're using 'Known hosts file' strategy to verify ssh host keys, but your known_hosts file does not exist, please go to 'Manage Jenkins' -> 'Configure Global Security' -> 'Git Host Key Verification Configuration' and configure host key verification.
+ > git fetch --tags --force --progress -- https://github.com/nguyenphungsang/Jenkins_CI.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision ecad39c784ef697398ec562f7820f1cfe25fcbc7 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f ecad39c784ef697398ec562f7820f1cfe25fcbc7 # timeout=10
+Commit message: "st commit"
+ > git rev-list --no-walk 16845edfc04ae5f7d033718182fa25db6f800188 # timeout=10
+[Checks API] No suitable checks publisher found.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Build)
+[Pipeline] timeout
+Timeout set to expire in 10 min
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ docker build -t franknguyen99/nginx:main-ecad39c .
+Sending build context to Docker daemon  471.6kB
+
+Step 1/4 : FROM nginx:1.13.9-alpine
+ ---> 537527661905
+Step 2/4 : COPY index.html /usr/share/nginx/html
+ ---> 7c6f2b494e3a
+Step 3/4 : EXPOSE 80
+ ---> Running in cddda8919f80
+Removing intermediate container cddda8919f80
+ ---> 205ecab8d3e7
+Step 4/4 : CMD ["nginx", "-g", "daemon off;"]
+ ---> Running in e0e6b6dbd4a1
+Removing intermediate container e0e6b6dbd4a1
+ ---> 5a18c71471a1
+Successfully built 5a18c71471a1
+Successfully tagged franknguyen99/nginx:main-ecad39c
++ docker tag franknguyen99/nginx:main-ecad39c franknguyen99/nginx:latest
++ grep franknguyen99/nginx
++ docker image ls
+franknguyen99/nginx   latest          5a18c71471a1   1 second ago   17.9MB
+franknguyen99/nginx   main-ecad39c    5a18c71471a1   1 second ago   17.9MB
+[Pipeline] withCredentials
+Masking supported pattern matches of $DOCKER_PASSWORD
+[Pipeline] {
+[Pipeline] sh
++ docker login --username franknguyen99 --password-stdin
++ echo ****
+WARNING! Your password will be stored unencrypted in /var/lib/jenkins/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+[Pipeline] sh
++ docker push franknguyen99/nginx:main-ecad39c
+The push refers to repository [docker.io/franknguyen99/nginx]
+f6da5c0b59e5: Preparing
+5efc006b5ed6: Preparing
+b0efd61aab3d: Preparing
+fd8dbe3c801b: Preparing
+cd7100a72410: Preparing
+cd7100a72410: Mounted from library/nginx
+b0efd61aab3d: Mounted from library/nginx
+fd8dbe3c801b: Mounted from library/nginx
+5efc006b5ed6: Mounted from library/nginx
+f6da5c0b59e5: Pushed
+main-ecad39c: digest: sha256:aa907a3198f712173c3e91ea19881214f3d704a66e41d88c2bdda78cee240109 size: 1360
+[Pipeline] sh
++ docker push franknguyen99/nginx:latest
+The push refers to repository [docker.io/franknguyen99/nginx]
+f6da5c0b59e5: Preparing
+5efc006b5ed6: Preparing
+b0efd61aab3d: Preparing
+fd8dbe3c801b: Preparing
+cd7100a72410: Preparing
+cd7100a72410: Layer already exists
+fd8dbe3c801b: Layer already exists
+b0efd61aab3d: Layer already exists
+5efc006b5ed6: Layer already exists
+f6da5c0b59e5: Layer already exists
+latest: digest: sha256:aa907a3198f712173c3e91ea19881214f3d704a66e41d88c2bdda78cee240109 size: 1360
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] sh
++ docker image rm franknguyen99/nginx:main-ecad39c
+Untagged: franknguyen99/nginx:main-ecad39c
+[Pipeline] sh
++ docker image rm franknguyen99/nginx:latest
+Untagged: franknguyen99/nginx:latest
+Untagged: franknguyen99/nginx@sha256:aa907a3198f712173c3e91ea19881214f3d704a66e41d88c2bdda78cee240109
+Deleted: sha256:5a18c71471a19954d233d38b5f65e80cad84eceda600a5b09a063e79b617d1cc
+Deleted: sha256:205ecab8d3e762501205f7f8c792d841be84360c1c0b11abf094c1da4d92d9c7
+Deleted: sha256:7c6f2b494e3af4a8905598ba6fdb184697dc54858bfcf90d3b72116fbc7e4243
+Deleted: sha256:baf3c4274dd7477ac0d13c0d3f4a7e66b6ab0232b0bd48f951fdd8f379d812cf
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy)
+[Pipeline] timeout
+Timeout set to expire in 10 min
+[Pipeline] {
+[Pipeline] withCredentials
+Masking supported pattern matches of $DOCKER_PASSWORD
+[Pipeline] {
+[Pipeline] ansiblePlaybook
+Warning: A secret was passed to "ansiblePlaybook" using Groovy String interpolation, which is insecure.
+		 Affected argument(s) used the following variable(s): [DOCKER_PASSWORD]
+		 See https://jenkins.io/redirect/groovy-string-interpolation for details.
+[Jenkins_CI] $ ansible-playbook playbook.yml -i hosts -e DOCKER_USERNAME=franknguyen99 -e DOCKER_PASSWORD=****
+[WARNING]: Could not match supplied host pattern, ignoring: server
+
+PLAY [server] ******************************************************************
+skipping: no hosts matched
+
+PLAY RECAP *********************************************************************
+
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] echo
+SUCCESSFULL
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+[Checks API] No suitable checks publisher found.
+Finished: SUCCESS
